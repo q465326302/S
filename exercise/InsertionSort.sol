@@ -9,7 +9,7 @@ contract InsertionSort{
         }
     }
     function forLoopTest() public pure returns(uint256){
-        uint sum = 0;
+        uint sum = ;
         for(uint i = 0;i <10;i++){
             sum += i;
         }
