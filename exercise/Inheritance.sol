@@ -1,0 +1,13 @@
+pragma solidity ^0.8.4;
+contract Yeye {
+    event Log(string mag);
+    function hip() public virtual{
+        emit Log("Yeye");
+    }
+    function pop() public virtual{
+        emit Log("Yeye");
+    }
+    function yeye() public virtual{
+        emit Log("Yeye");
+    }
+}
