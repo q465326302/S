@@ -47,9 +47,9 @@ library Strings{
 contract UseLibray{
     using Strings for uint256;
     function getString1(uint256 _number) public pure returns(string memory){
-         return _number.toHexString()   
+         return _number.toHexString();
     }
     function getString2(uint256 _number) public pure returns(string memory){
-        return strings.toHexString(_number);
+        return  Strings.toHexString(_number);
     }
 }
