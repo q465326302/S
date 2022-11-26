@@ -14,5 +14,17 @@ contract SendETH {
     function transferETH(address payable _to, uint256 amout) external payable{
         _to.transfer(amout);
     }
-    function
+    function sendETH(address payable _to,uint256 amout) external payable{
+        bool success = _to.send(amout);
+        if (!success){
+            revert SendFailed();
+        }
+    }
+    function callETH(address payable _to, uint amout) external payable{
+        (bool success,) = _to.call{value: amout}("");
+        if(!success){
+            revert CallFailed();
+        }
+    }
 }
+
