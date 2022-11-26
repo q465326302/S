@@ -6,6 +6,6 @@ contract Seletor{
         emit Log(msg.data);
     }
     function mintSelector() external pure returns(bytes4 mSelector){
-        return bytes4(keccak256("mint(address)");
+        return bytes4(keccak256("mint(address)"));
     }
 }
