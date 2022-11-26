@@ -28,3 +28,14 @@ contract SendETH {
     }
 }
 
+contract ReceiveETH{
+    event Log(uint amout,uint gas);
+    
+    receive() external payable{
+        emit Log(msg.value,gasleft());
+    }
+
+    function getBalance() view public returns (uint){
+        return address(this).balance;
+    }
+}
