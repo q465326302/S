@@ -20,7 +20,7 @@ contract SendETH {
             revert SendFailed();
         }
     }
-    function callETH(address payable _to, uint amout) external payable{
+    function callETH(address payable _to, uint256 amout) external payable{
         (bool success,) = _to.call{value: amout}("");
         if(!success){
             revert CallFailed();
