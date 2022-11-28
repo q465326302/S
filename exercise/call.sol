@@ -20,27 +20,33 @@ contract OtherContract {
 
 }
 contract Call{
+
     event Response(bool success, bytes data);
-    function callSetX(address payable _addr,uint256 x) public payable {
+
+    function callSetX(address payable _addr, uint256 x) public payable {
         (bool success, bytes memory data) = _addr.call{value: msg.value}(
             abi.encodeWithSignature("setX(uint256)", x)
         );
 
-        emit Response(success,data);
+        emit Response(success, data);
+    }
 
     function callGetX(address _addr) external returns(uint256){
-        (bool success,bytes memory data) = _addr.call(
+        // call getX()
+        (bool success, bytes memory data) = _addr.call(
             abi.encodeWithSignature("getX()")
-            );
-        
+        );
+
         emit Response(success, data);
         return abi.decode(data, (uint256));
     }
-            
+
     function callNonExist(address _addr) external{
+        // call getX()
         (bool success, bytes memory data) = _addr.call(
             abi.encodeWithSignature("foo(uint256)")
         );
+
         emit Response(success, data);
     }
 }
