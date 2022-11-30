@@ -6,7 +6,7 @@ contract Pair{
     address public token1;
 
     constructor() payable{
-        factory = msg.sender
+        factory = msg.sender;
     }
     function initialize(address _token0,address _token1) external {
         require(msg.sender == factory,'UniswapV2:FORBIDDEN');
@@ -15,5 +15,15 @@ contract Pair{
     }
 }
 contract PairFactory{
-    mapping(address =>)
+    mapping(address => mapping(address => address)) public getPair;
+    address[] public allPairs;
+
+    function createPair(address tokenA,address tokenB) external returns (address pairAddr) {
+        Pair pair = new Pair();
+        pair.initialize(tokenA, tokenB);
+        allPairs.push(pairAddr);
+        getPair[tokenA][tokenB] = pairAddr;
+        getPair[tokenA][tokenB] = pairAddr;
+
+    }
 }
