@@ -25,6 +25,7 @@ contract PairFactory2{
         bytes32 salt = keccak256(abi.encodePacked(token0,token1));
         Pair pair = new Pair{salt: salt}();
         pair.initialize(tokenA,tokenB);
+        pairAddr = address(pair);
         allPairs.push(pairAddr);
         getPair[tokenA][tokenB] = pairAddr;
         getPair[tokenB][tokenA] = pairAddr;
