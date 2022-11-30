@@ -21,6 +21,7 @@ contract PairFactory{
     function createPair(address tokenA,address tokenB) external returns (address pairAddr) {
         Pair pair = new Pair();
         pair.initialize(tokenA, tokenB);
+        pairAddr = address(pair);
         allPairs.push(pairAddr);
         getPair[tokenA][tokenB] = pairAddr;
         getPair[tokenA][tokenB] = pairAddr;
