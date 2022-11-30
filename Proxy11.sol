@@ -7,7 +7,7 @@ contract Store{
     
     uint[] private array1;
 
-    constructor (uint256[] memory _nums) {//每调用一次new的时候 空数组
+    constructor (uint256[] memory _nums) {//每调用一次new的时候 建立空数组
         array1 = _nums;
     }
 
