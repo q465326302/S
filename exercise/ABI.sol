@@ -22,5 +22,5 @@ contract ABIEncode{
     function decode(bytes memory data) public pure returns(uint dx, address daddr, string memory dname,uint[2] memory darray) {
         (dx,daddr,dname,darray) = abi.decode(data,(uint, address, string, uint[2]));
     }
-
+    
 }
