@@ -42,8 +42,8 @@ contract ERC20 is IERC20 {
     }
     function mint(uint amount) external {
         balanceOf[msg.sender] += amount;
-        emit Transfer(sender, recipient, amount);
-        return true;
+        totalSupply += amount;
+        emit Transfer(address(0), msg.sender, amount);
     }
     function mint(uint amount) external {
         balanceOf[msg.sender] += amount;
@@ -52,7 +52,7 @@ contract ERC20 is IERC20 {
     }
 }
 contract Faucet {
-    uint256 public amountALLowed = 100;
+    uint256 public amountAllowed = 100;
     address public tokenContract;
     mapping(address => bool) public requestedAddress;
 
@@ -60,5 +60,15 @@ contract Faucet {
     
     constructor(address _tokenContract) {
         tokenContract = _tokenContract;
-    } 
+    }
+    function requestTokens() external {
+        require(requestedAddress[msg.sender] == false,"Can't Request Multiple Times!");
+        IERC20 token = IERC20(tokenContract);
+        require(token.balanceOf(address(this)) >= amountAllowed,"Faucet Empty!");
+
+        token.transfer(msg.sender, amountAllowed);
+        requestedAddress[msg.sender] = true;
+
+        emit SendToken(msg.sender, amountAllowed);
+    }
 }
