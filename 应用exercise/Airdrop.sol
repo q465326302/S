@@ -42,8 +42,12 @@ contract Airdrop {
 contract ERC20 is IERC20 {
     mapping(address => uint256) public override balanceOf;
     mapping(address => mapping(address => uint)) public override allowance;
-    
+
     uint256 public override totalSupply;
+    string public name;
+    string public symbol;
+    uint8 public decimals = 18;
+    
     constructor(string memory name_, string memory symbol_) {
         name = name_;
         symbol = symbol_;
