@@ -2,7 +2,7 @@
 //by 0xAA
 pragma solidity ^0.8.4;
 
-import ",/IERC20.sol";
+import "./IERC20.sol";
 
 contract ERC20 is IERC20 {
     mapping(address =>uint256) public override balanceOf;
@@ -50,4 +50,15 @@ contract ERC20 is IERC20 {
         totalSupply += amount;
         emit Transfer(address(0),msg.sender, amount);
     }
+}
+contract Faucet {
+    uint256 public amountALLowed = 100;
+    address public tokenContract;
+    mapping(address => bool) public requestedAddress;
+
+    event SendToken(address indexed Recelver, uint256 indexed Amount);
+    
+    constructor(address _tokenContract) {
+        tokenContract = _tokenContract;
+    } 
 }
