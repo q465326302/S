@@ -6,22 +6,22 @@ pragma solidity ^0.8.4;
 import "./IERC20.sol";
 
 contract ERC20 is IERC20 {
-    mapping(address => uint256) pulic override balanceOf;
-    mapping(address => mapping(address =>uint256)) pulic override allowance;
+    mapping(address => uint256) public override balanceOf;
+    mapping(address => mapping(address =>uint256)) public override allowance;
 
-    uint256 pulic override totalSupply;
+    uint256 public override totalSupply;
 
-    string pulic name;
-    string pulic symbol;
-    uint8 pulic decimals = 18;
+    string public name;
+    string public symbol;
+    uint8 public decimals = 18;
 
-    constructor(string memory mname_,string memory symbol_){
+    constructor(string memory name_,string memory symbol_){
         name = name_;
         symbol = symbol_;
     }
 
     function transfer(address recipient, uint amount) external override returns (bool) {
-        balanceOf[msg.spender] -= amount;
+        balanceOf[msg.sender] -= amount;
         balanceOf[recipient] += amount;
         emit Transfer(msg.sender, recipient, amount);
         return true;
@@ -44,9 +44,13 @@ contract ERC20 is IERC20 {
         return true;
     }
     function mint(uint amount) external {
-        balanceOf[msg.sender] += amout;
+        balanceOf[msg.sender] += amount;
         totalSupply += amount;
         emit Transfer(address(0), msg.sender, amount);
     }
-    function burn(uint amount) external {}
+    function burn(uint amount) external {
+        balanceOf[msg.sender] -= amount;
+        totalSupply -= amount;
+        emit Transfer(msg.sender, address(0), amount);
+    }
 }
