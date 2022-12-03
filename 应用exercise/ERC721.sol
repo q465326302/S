@@ -57,7 +57,7 @@ contract ERC721 is IERC721, IERC721Metadata{
 
     function setApprovalForAll(address operator, bool approved) external override {
         _operatirApprovals[msg.sender][operator] = approved;
-        emit ApprovelForAll(msg.sender, operator, approved);
+        emit ApprovalForAll(msg.sender, operator, approved);
     }
 
     function getApproved(uint tokenId) external view override returns(address){
@@ -96,7 +96,7 @@ contract ERC721 is IERC721, IERC721Metadata{
 
     function _transfer(
         address owner,
-        address form,
+        address from,
         address to,
         uint tokenId
     ) private {
