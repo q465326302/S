@@ -65,4 +65,85 @@ contract ERC721 is IERC721, IERC721Metadata{
         return _tokenApprovals[tokenId];
     }
 
+    function _approve(
+        address owner,
+        address to,
+        uint tokenId,
+        
+    )private {
+        _tokenApprovals[tokenId] = to;
+        emit Approval(owner, to, tokenId);
+    }
+
+    function approve(address to, uint tokenId) external override {
+        address owner = _owners[tokenId];
+        require(
+            msg.sender == owner ||_operatirApprovals[owner][msg.sender],
+            "not owner nor approved for all"
+        );
+        _approve(owner, to,tokenId);
+    }
+
+    function _isApprovedOrOwner(
+        address owner,
+        address spender,
+        uint tokenId
+    ) private view returns (bool) {
+        return (spender == owner ||
+            _tokenApprovals[tokenId] == spender ||
+            _operatirApprovals[owner][spender];)
+    }
+
+    function _transfer(
+        address owner,
+        address form,
+        address to,
+        uint tokenId
+    ) private {
+        require(from == owner,"not owner");
+        require(to != address(0),"transfer to the zero address");
+        _approve(owner, address(0),tokenId);
+        _balances[from] -= 1;
+        _balances[to] += 1;
+        _owners[tokenId] = to;
+        emit Transfer(from, to, tokenId);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint tokenId
+    ) external override {
+        address owner = ownerOf(tokenId),
+        require(
+            _isApprovedOrOwner(owner,msg.sender, tokenId),
+            "not owner not approved"
+        );
+        _transfer(owner,from, to,tokenId);
+    }
+    function _sefeTransfer(
+        address owner,
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    ) private{
+        _transfer(owner, from, to, tokenId);
+        require(_checkOnERC721Received(from, to, tokenId, _data),"not ERC721Receiver")
+    }
+    function safeTransferForm(
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    ) public override {
+        address owner = ownerOf(tokenId);
+        require(
+            _isApprovedOrOwner(owner,msg.sender, tokenId),
+            "not owner nor approved"
+        );
+        _sefeTransfer(owner, from, to, tokenId, _data);
+        
+    }
+
 }
