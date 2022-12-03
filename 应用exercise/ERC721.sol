@@ -146,4 +146,58 @@ contract ERC721 is IERC721, IERC721Metadata{
         
     }
 
+    function safeTransferForm(
+        address from,
+        address to,
+        uint tokenId
+    ) external override {
+        safeTransferForm(from, to, tokenId, "");
+    }
+
+    function _mint(address to, uint tokenId) internal virtual {
+        require(to != address(0),"mint to zeero address");
+        require(_owners[tokenId] == address(0),"token already minted");
+        _balances[to] += 1;
+        _owners[tokenId] = to;
+        emit Transfer(address(0), to,tokenId);
+    }
+
+    function _burn(uint tokenId) internal virtual {
+        address owner = ownerOf(tokenId);
+        require(msg.sender == owner, "not owner of token");
+        _approve(owner, address(0), tokenId);
+        _balances[owner] -= 1;
+        delete _owners(owner, address(0), tokenId);
+    }
+
+    function _checkOnERC721Received(
+        address from,
+        address to,
+        uint tokenId,
+        bytes memory _data
+    )private returns(bool) {
+        if (to.isContract()){
+            return
+                IERC721Receiver(to).onERC721Received(
+                    msg.sender,
+                    from,
+                    tokenId,
+                    _data
+                ) == IERC721Receiver.onERC721Received.selector;
+        } else {
+            return true;
+        }
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_owners[tokenId] != address(0),"Token NOT Exist");
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+    }
+
+    function _baseURI() internal view virtual returns(string memory){
+        return "";
+    }
+    
+
 }
