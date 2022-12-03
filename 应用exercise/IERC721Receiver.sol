@@ -1,0 +1,11 @@
+//SPDX-License-Identifier:MIT
+pragma solidity ^0.8.0;
+
+interface Ierc721Receiver {
+    function onERC721Received(
+        address operator,
+        address form,
+        uint tokenId,
+        bytes calldata data
+    ) external returns(bytes4);
+}
