@@ -61,14 +61,14 @@ contract ERC721 is IERC721, IERC721Metadata{
     }
 
     function getApproved(uint tokenId) external view override returns(address){
-        require(_owners)[tokenId] != address(0),"token doesn't exist");
+        require(_owners[tokenId] != address(0),"token doesn't exist");
         return _tokenApprovals[tokenId];
     }
 
     function _approve(
         address owner,
         address to,
-        uint tokenId,
+        uint tokenId
         
     )private {
         _tokenApprovals[tokenId] = to;
@@ -91,7 +91,7 @@ contract ERC721 is IERC721, IERC721Metadata{
     ) private view returns (bool) {
         return (spender == owner ||
             _tokenApprovals[tokenId] == spender ||
-            _operatirApprovals[owner][spender];)
+            _operatirApprovals[owner][spender]);
     }
 
     function _transfer(
@@ -114,7 +114,7 @@ contract ERC721 is IERC721, IERC721Metadata{
         address to,
         uint tokenId
     ) external override {
-        address owner = ownerOf(tokenId),
+        address owner = ownerOf(tokenId);
         require(
             _isApprovedOrOwner(owner,msg.sender, tokenId),
             "not owner not approved"
@@ -129,7 +129,7 @@ contract ERC721 is IERC721, IERC721Metadata{
         bytes memory _data
     ) private{
         _transfer(owner, from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data),"not ERC721Receiver")
+        require(_checkOnERC721Received(from, to, tokenId, _data),"not ERC721Receiver");
     }
     function safeTransferForm(
         address from,
