@@ -121,7 +121,7 @@ contract ERC721 is IERC721, IERC721Metadata{
         );
         _transfer(owner,from, to,tokenId);
     }
-    function _sefeTransfer(
+    function _safeTransfer(
         address owner,
         address from,
         address to,
@@ -142,7 +142,7 @@ contract ERC721 is IERC721, IERC721Metadata{
             _isApprovedOrOwner(owner,msg.sender, tokenId),
             "not owner nor approved"
         );
-        _sefeTransfer(owner, from, to, tokenId, _data);
+        _safeTransfer(owner, from, to, tokenId, _data);
         
     }
 
@@ -167,7 +167,7 @@ contract ERC721 is IERC721, IERC721Metadata{
         require(msg.sender == owner, "not owner of token");
         _approve(owner, address(0), tokenId);
         _balances[owner] -= 1;
-        delete _owners(owner, address(0), tokenId);
+        emit Transfer(owner, address(0), tokenId);
     }
 
     function _checkOnERC721Received(
@@ -175,8 +175,8 @@ contract ERC721 is IERC721, IERC721Metadata{
         address to,
         uint tokenId,
         bytes memory _data
-    )private returns(bool) {
-        if (to.isContract()){
+    ) private returns(bool) {
+         if (to.isContract()) {
             return
                 IERC721Receiver(to).onERC721Received(
                     msg.sender,
