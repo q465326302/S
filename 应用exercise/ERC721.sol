@@ -84,7 +84,8 @@ contract ERC721 is IERC721, IERC721Metadata{
     }
 
     function approve(address to, uint tokenId) external override {
-       // 实现IERC721的approve，将tokenId授权给 to 地址。条件：to不是owner，且msg.sender是owner或授权地址。调用_approve函数
+       // 实现IERC721的approve，将tokenId授权给 to 地址。条件：to不是owner，且msg.sender是owner或授权地址。 
+       //调用_approve函数
         address owner = _owners[tokenId];
         require(
             msg.sender == owner ||_operatirApprovals[owner][msg.sender],
@@ -139,7 +140,8 @@ contract ERC721 is IERC721, IERC721Metadata{
     }
 
     /**
-     * 安全转账，安全地将 tokenId 代币从 from 转移到 to，会检查合约接收者是否了解 ERC721 协议，以防止代币被永久锁定。调用了_transfer函数和_checkOnERC721Received函数。条件：
+     * 安全转账，安全地将 tokenId 代币从 from 转移到 to，会检查合约接收者是否了解 ERC721 协议，
+     以防止代币被永久锁定。调用了_transfer函数和_checkOnERC721Received函数。条件：
      * from 不能是0地址.
      * to 不能是0地址.
      * tokenId 代币必须存在，并且被 from拥有.
@@ -181,6 +183,14 @@ contract ERC721 is IERC721, IERC721Metadata{
         safeTransferForm(from, to, tokenId, "");
     }
 
+     /** 
+     * 铸造函数。通过调整_balances和_owners变量来铸造tokenId并转账给 to，同时释放Transfer事件。
+     铸造函数。通过调整_balances和_owners变量来铸造tokenId并转账给 to，同时释放Transfer事件。
+     * 这个mint函数所有人都能调用，实际使用需要开发人员重写，加上一些条件。
+     * 条件:
+     * 1. tokenId尚不存在。
+     * 2. to不是0地址.
+     */
     function _mint(address to, uint tokenId) internal virtual {
         require(to != address(0),"mint to zeero address");
         require(_owners[tokenId] == address(0),"token already minted");
@@ -189,6 +199,7 @@ contract ERC721 is IERC721, IERC721Metadata{
         emit Transfer(address(0), to,tokenId);
     }
 
+     // 销毁函数，通过调整_balances和_owners变量来销毁tokenId，同时释放Transfer事件。条件：tokenId存在。
     function _burn(uint tokenId) internal virtual {
         address owner = ownerOf(tokenId);
         require(msg.sender == owner, "not owner of token");
@@ -196,7 +207,8 @@ contract ERC721 is IERC721, IERC721Metadata{
         _balances[owner] -= 1;
         emit Transfer(owner, address(0), tokenId);
     }
-
+    // _checkOnERC721Received：函数，
+    //用于在 to 为合约的时候调用IERC721Receiver-onERC721Received, 以防 tokenId 被不小心转入黑洞。
     function _checkOnERC721Received(
         address from,
         address to,
@@ -215,13 +227,16 @@ contract ERC721 is IERC721, IERC721Metadata{
             return true;
         }
     }
-
+    //实现IERC721Metadata的tokenURI函数，查询metadata。
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_owners[tokenId] != address(0),"Token NOT Exist");
         string memory baseURI = _baseURI();
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
     }
-
+     /**
+     * 计算{tokenURI}的BaseURI，tokenURI就是把baseURI和tokenId拼接在一起，需要开发重写。
+     * BAYC的baseURI为ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/ 
+     */
     function _baseURI() internal view virtual returns(string memory){
         return "";
     }
