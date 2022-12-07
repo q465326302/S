@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 import "./ERC721.sol";
 
 
-library MarkleProof {
+library MerkleProof {
     function verify(
         bytes32[] memory proof,
         bytes32 root,
@@ -31,7 +31,7 @@ contract MerkleTree is ERC721 {
     constructor(string memory name,string memory symbol,bytes32  merkleroot) ERC721 (name,symbol){
         root = merkleroot;
     }
-    function mint(address,account,uint256 tokenId,bytes[] calldata proof) external{
+    function mint(address account,uint256 tokenId,bytes32[] calldata proof) external{
         require(_verify(_leaf(account), proof),"Invalid merkle proof");
         require(!mintedAddress[account],"Already minted!");
 
