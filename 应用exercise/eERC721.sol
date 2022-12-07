@@ -3,10 +3,10 @@
 pragma solidity ^0.8.4;
 import "./IERC165.sol";
 import "./IERC721.sol";
-import "./IREC721Receiver.sol";
+import "./IERC721Receiver.sol";
 import "./IERC721Metadata.sol";
 import "./Address.sol";
-import "./String";
+import "./String.sol";
 contract ERC721 is IERC721, IERC721Metadata {
     using Address for address;
     using Strings for uint256;
