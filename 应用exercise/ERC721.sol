@@ -159,7 +159,7 @@ contract ERC721 is IERC721, IERC721Metadata{
     }
 
     //现IERC721的safeTransferFrom，安全转账，调用了_safeTransfer函数
-    function safeTransferForm(
+    function safeTransferFrom(
         address from,
         address to,
         uint tokenId,
@@ -175,12 +175,12 @@ contract ERC721 is IERC721, IERC721Metadata{
     }
 
      // safeTransferFrom重载函数
-    function safeTransferForm(
+    function safeTransferFrom(
         address from,
         address to,
         uint tokenId
     ) external override {
-        safeTransferForm(from, to, tokenId, "");
+        safeTransferFrom(from, to, tokenId, "");
     }
 
      /** 

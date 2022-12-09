@@ -6,16 +6,17 @@ import "./WTFApe.sol";
 
 contract NFTSwap is IERC721Receiver{
     event List(address indexed seller, address indexed nftaddr, uint indexed tokenId, uint256 price);
-    event Purchase(address indexed buyer, address indexed nftaddr,uint256 indexed tokenId, uint256 price);
-    event Revoke(address indexed seller, address indexed nftaddr, uint256 indexed tokenId);
-    event Updata(address indexed seller, address indexed nftaddr,uint256 indexed tokenId,uint256 newPrice);
+    event Purchase(address indexed buyer, address indexed nftAddr,uint256 indexed tokenId, uint256 price);
+    event Revoke(address indexed seller, address indexed nftAddr, uint256 indexed tokenId);
+    event Updata(address indexed seller, address indexed nftAddr,uint256 indexed tokenId,uint256 newPrice);
 
-    struct Owner{
+    struct Order{
         address owner;
-        uint256 pricce;
+        uint256 price;
     }
 
     mapping(address => mapping(uint256 => Order)) public nftList;
+
     fallback() external payable{}
 
     function list(address _nftAddr, uint256 _tokenId, uint256 _price) public{
@@ -25,7 +26,7 @@ contract NFTSwap is IERC721Receiver{
         Order storage _order = nftList[_nftAddr][_tokenId];
         _order.owner = msg.sender;
         _order.price = _price;
-        _nft.safeTransferFrom(msg.sender,address(this),_tokenId);
+        _nft.safeTransferFrom(msg.sender, address(this),_tokenId);
 
         emit List(msg.sender, _nftAddr, _tokenId, _price);
     }
@@ -47,7 +48,7 @@ contract NFTSwap is IERC721Receiver{
         emit Purchase(msg.sender,_nftAddr,_tokenId,msg.value);
     }
     function recoke(address _nftAddr, uint256 _tokenId) public {
-        Order storage _order = nftList[_nftAddr][_tokenId];
+        Order storage _order = nftList[_nftAddr][_tokenId];                         
         require(_order.owner == msg.sender, "Not Owner");
         IERC721 _nft = IERC721(_nftAddr);
         require(_nft.ownerOf(_tokenId) == address(this),"Inavlid Order");
@@ -57,7 +58,7 @@ contract NFTSwap is IERC721Receiver{
 
         emit Revoke(msg.sender, _nftAddr, _tokenId);
     }
-    function Updata(address _nftAddr,uint256 _tokenId,uint256 _newPrice) public {
+    function Update(address _nftAddr, uint256 _tokenId,uint256 _newPrice) public {
         require(_newPrice > 0,"Invalid Price");
         Order storage _order = nftList[_nftAddr][_tokenId];
         require(_order.owner == msg.sender,"NOt Owner");
@@ -67,7 +68,7 @@ contract NFTSwap is IERC721Receiver{
         
         _order.price = _newPrice;
 
-        emit Updata(msg.sender, _nftAddr, _tokenId _newPrice);
+        emit Updata(msg.sender, _nftAddr, _tokenId ,_newPrice);
 
     }
     function onERC721Received(

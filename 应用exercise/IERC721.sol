@@ -13,14 +13,14 @@ interface IERC721 is IERC165 {
     
     function ownerOf(uint256 tokenId) external view returns (address owner);
 
-    function safeTransferForm(
+    function safeTransferFrom(
         address form,
         address to,
         uint256 token,
         bytes calldata data
     ) external;
 
-    function safeTransferForm(
+    function safeTransferFrom(
         address form,
         address to,
         uint256 tokenId
