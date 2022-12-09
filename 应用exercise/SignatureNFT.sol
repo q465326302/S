@@ -7,7 +7,7 @@ library ECDSA{
     function verify(bytes32 _msgHash, bytes memory _signature, address _signer) internal pure returns (bool){
         return recoverSigner(_msgHash, _signature) == _signer;
     }
-    function recoverSigner(bytes32 _msgHash, bytes _signature) internal pure returns (address){
+    function recoverSigner(bytes32 _msgHash, bytes memory _signature) internal pure returns (address){
         require(_signature.length == 65, "invalid signature lenth");
         bytes32 r;
         bytes32 s;
@@ -15,7 +15,7 @@ library ECDSA{
         assembly {
             r := mload(add(_signature, 0x20))
             s := mload(add(_signature, 0x40))
-            v := bytes(0,mload(add(_signature,0x60)))
+            v := byte(0,mload(add(_signature,0x60)))
         }
         return ecrecover(_msgHash,v,r,s);
     }
@@ -33,11 +33,12 @@ contract SignatureNFT is ERC721 {
         signer = _signer;
     }
     function mint(address _account,uint256 _tokenId, bytes memory _signature) external {
-        bytes32 _ethSignedMessageHash = ECDSA.toEthSignedMessageHash(_msgHash);
         bytes32 _msgHash = getMessageHash(_account, _tokenId);
+        bytes32 _ethSignedMessageHash = ECDSA.toEthSignedMessageHash(_msgHash);
+    
         require(verify(_ethSignedMessageHash,_signature),"Invalid signature");
         require(!mintedAddress[_account],"Already minted!");
-        mintedAddress[_account] = ture;
+        mintedAddress[_account] = true;
         _mint(_account, _tokenId);
 
     }
@@ -84,7 +85,7 @@ contract VerifySignature {
         returns(address)
     {
         (bytes32 r, bytes32 s, uint8 v) = splitSignature(_signature);
-        return ecrcover(_ethSignedMessageHash, v, r, s);
+        return ecrecover(_ethSignedMessageHash, v, r, s);
     }
     function splitSignature(bytes memory sig)
         public
@@ -99,7 +100,7 @@ contract VerifySignature {
         assembly {
             r := mload(add(sig, 0x20))
             s := mload(add(sig, 0x40))
-            v := bytes(0, mload(add(sig, 0x60)))
+            v := byte(0, mload(add(sig, 0x60)))
         }
     }
 
