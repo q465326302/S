@@ -39,4 +39,16 @@ contract RandomNumber is ERC721,VRFConsumerBase{
         uint256 _tokenId = pickRandomUniqueId(getRandomOnchain());
         _mint(msg.sender,_tokenId);
     }
+    function mintRandomVRF() public returns(bytes32 requestId){
+        require(LINK.balanceOf(address(this))>= fee, "Not enough LINK - fill contract with faucet");
+        requestId = requestRandomness(keyHash, fee);
+        requireToSender[requestId] = msg.sender;
+        return requestId;
+    }
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override{
+        address sender = requireToSender[requestId];
+        uint256 _tokenId = pickRandomUniqueId(randomness);
+
+        _mint(sender,_tokenId);
+    }
 }
