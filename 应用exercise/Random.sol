@@ -31,4 +31,12 @@ contract RandomNumber is ERC721,VRFConsumerBase{
         ids[randomIndex] = ids[len - 1] == 0 ? len - 1 : ids[len - 1];
         ids[len - 1] = 0;
     }
+    function getRandomOnchain() public view returns(uint256) {
+        bytes32 randomBytes = keccak256(abi.encodePacked(blockhash(block.number-1),msg.sender,block.timestamp));
+        return uint256(randomBytes);
+    }
+    function mintRandomOnchain() public {
+        uint256 _tokenId = pickRandomUniqueId(getRandomOnchain());
+        _mint(msg.sender,_tokenId);
+    }
 }
