@@ -32,4 +32,23 @@ interface IERC1155 is IERC165 {
     //批量授权 调用者代币授权给operator地址
     function isApprovalForAll(address account, address operator) external view returns(bool);
     //批量授权查询 如授权地址operator被account授权 返回ture
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes calldata data
+    ) external;
+    //安全转账 amount单位的id类币从from转to 有要求 如果调用者不是from地址而是授权地址 需要from的授权 
+    //from地址需要有足够的持仓
+    //如果接受方是合约，需要IERCReceive的onERC1155Received方法，返回相应的值
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] calldata ids,
+        uint256[] calldata amount,
+        bytes calldata data
+    ) external;
+    //安全批量转账 要求ids和amount长度相等
+    //同safetransferfrom一样，如接收方是合约 需IERCReceive的onERC1155Received方法，返回相应的值
 }
