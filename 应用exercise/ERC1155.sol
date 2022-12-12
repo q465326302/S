@@ -31,7 +31,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         require(account != address(0), "ERC1155: address zero is not a valid owner");
         return _balances[id][account]; 
     }
-        function balanceOfBatch(address[] memory accounts, uint256[] memory ids)
+    function balanceOfBatch(address[] memory accounts, uint256[] memory ids)
         public view virtual override
         returns (uint256[] memory)
     {
@@ -41,6 +41,14 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
             batchBalances[i] = balanceOf(accounts[i], ids[i]);
         }
         return batchBalances;
+    }
+    function setApprovalForAll(address operator, bool approved) public virtual override {
+        require(msg.sender != operator, "ERC1155: setting approval status for self");
+        _operatorApprovals[msg.sender][operator] = approved;
+        emit ApprovalForAll(msg.sender, operator, approved);
+    }
+    function isApprovedForAll(address account, address operator) public view virtual override returns (bool) {
+        return _operatorApprovals[account][operator];
     }
 
 }
