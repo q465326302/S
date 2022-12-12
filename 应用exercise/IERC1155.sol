@@ -16,8 +16,15 @@ interface IERC1155 is IERC165 {
 
     event ApprovalForAll(address indexed account,address,address indexed operator, bool approved);
     //批量授权
-    event URI(sring value,uint256 indexed id);
+    event URI(string value,uint256 indexed id);
     //当“id”币的URI发生变化是释放，“value”成为新的URI
-
     
+    function balanceOf(address account, uint256 id) external view returns(uint256);
+    //持仓查询，返回“account的id种类币持仓量
+
+    function balanceOfBatch(address[] calldata accounts,uint256[] calldata ids)
+        external
+        view
+        returns(uint256[] memory);
+        //批量持仓查询
 }
