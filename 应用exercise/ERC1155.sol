@@ -133,6 +133,9 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         emit TransferBatch(operator,address(0),to, ids,amounts);
         _doSafeTransferAcceptanceCheck(operator,address(0), to,ids, amounts, data);
     }
+    function _burn(
+        
+    )
 
 
 }
