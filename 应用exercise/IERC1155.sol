@@ -27,4 +27,9 @@ interface IERC1155 is IERC165 {
         view
         returns(uint256[] memory);
         //批量持仓查询
+    
+    function setApprovalForAll(address operator,bool approved)external;
+    //批量授权 调用者代币授权给operator地址
+    function isApprovalForAll(address account, address operator) external view returns(bool);
+    //批量授权查询 如授权地址operator被account授权 返回ture
 }
