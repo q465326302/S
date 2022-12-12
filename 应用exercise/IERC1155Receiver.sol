@@ -18,4 +18,5 @@ interface IERC1155 is IERC165 {
         uint256[] calldata value,
         bytes calldata data
     ) external returns(bytes4);
+    //多币转账接受函数，接受ERC1155安全转账safeBacthtransferfrom 需实现并返回自己的函数选择器0xbc197c81
 }
