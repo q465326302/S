@@ -51,5 +51,32 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         return _operatorApprovals[account][operator];    
     }
 
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override {
+        address operator = msg.sender;
+        require(
+            from == operator || isApprovadForAll(from, operator),
+            "ERC1155:caller is not token owner nor approved"
+        );//调用者是持有者或者被授权
+        require(to != address(0),"ERC1155:transfer to the zero address");
+        //from地址有足够持仓
+        uint256 fromBalance = _balances[id][from];
+        require(fromBalance >= amount,"ERC1155:insufficient balance for transfer");
+        //更新持仓量
+        unchecked {
+            _balances[id][from] = fromBalance - amount;
+
+        }
+        _balances[id][to] += amount;
+        emit TransferSingle(operator,from,to,id,amount);
+        _doSafeTransferAcceptanceCheck(operator,from,to, id,amount,data);
+        //安全检查
+    }
+
 
 }
