@@ -43,12 +43,13 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         return batchBalances;
     }
     function setApprovalForAll(address operator, bool approved) public virtual override {
-        require(msg.sender != operator, "ERC1155: setting approval status for self");
+        require(msg.sender != operator,"ERC1155:setting approval status for self");
         _operatorApprovals[msg.sender][operator] = approved;
-        emit ApprovalForAll(msg.sender, operator, approved);
+        emit ApprovalForAll(msg.sender,operator,approved);
     }
-    function isApprovedForAll(address account, address operator) public view virtual override returns (bool) {
-        return _operatorApprovals[account][operator];
+    function isApprovadForAll(address account,address operator) public view virtual override returns (bool) {
+        return _operatorApprovals[account][operator];    
     }
+
 
 }

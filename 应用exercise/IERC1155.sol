@@ -30,7 +30,7 @@ interface IERC1155 is IERC165 {
     
     function setApprovalForAll(address operator,bool approved)external;
     //批量授权 调用者代币授权给operator地址
-    function isApprovalForAll(address account, address operator) external view returns(bool);
+    function isApprovadForAll(address account, address operator) external view returns(bool);
     //批量授权查询 如授权地址operator被account授权 返回ture
     function safeTransferFrom(
         address from,
