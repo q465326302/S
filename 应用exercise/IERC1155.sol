@@ -4,13 +4,20 @@ import "./IERC165.sol";
 
 interface IERC1155 is IERC165 {
     event TransferSingle(address indexed operator,address indexed from, address indexed to, uint256 id,uint256 value);
+    //单个代币转账事件（当`value`个`id`种类的代币被`operator`从`from`转账到`to`时释放
 
-        event TransferBatch(
+    event TransferBatch(//批量代币转账
         address indexed operator,
         address indexed from,
         address indexed to,
-        uint256[] ids,
-        uint256[] value
+        uint256[] ids,//代币种类
+        uint256[] value//代币数组
     );
 
+    event ApprovalForAll(address indexed account,address,address indexed operator, bool approved);
+    //批量授权
+    event URI(sring value,uint256 indexed id);
+    //当“id”币的URI发生变化是释放，“value”成为新的URI
+
+    
 }
