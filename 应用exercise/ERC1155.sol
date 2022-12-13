@@ -213,6 +213,13 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
             }
         }
     }
+    function uri(uint256 id) public view virtual override returns (string memory){
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI,id.toString())) : "";
+    }
+    function _baseURI() internal view virtual returns (string memory) {
+        return "";
+    }
 
 
 }
