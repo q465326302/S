@@ -105,7 +105,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         }
         emit TransferBatch(operator, from ,to ,ids ,amounts);
 
-        _doSafeTransferAcceptanceCheck(operator,from, to, ids,amounts, data);
+        _doSafeBatchTransferAcceptanceCheck(operator,from, to, ids,amounts, data);
     }
     function _mint(//铸造
         address to,
@@ -131,7 +131,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
             _balances[ids[i]][to] += amount[i];
         }
         emit TransferBatch(operator,address(0),to, ids,amounts);
-        _doSafeTransferAcceptanceCheck(operator,address(0), to,ids, amounts, data);
+        _doSafeBatchTransferAcceptanceCheck(operator,address(0), to,ids, amounts, data);
     }
     function _burn(
         address from,
@@ -183,6 +183,28 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
             try IERC1155Receiver(to).onERC1155Received(operator,from, id, amount,data) returns (bytes4 response){
                 if (response != IERC1155Receiver.onERC1155Received.selector) {
                     revert("ERC1155:ERC1155Receiver rejected tokens");
+                }
+            } catch Error(string memory reason) {
+                revert(reason);
+            } catch {
+                revert("ERC1155:transfer to non-ERC1155Receiver implementer");
+            }
+        }
+    }
+    function _doSafeBatchTransferAcceptanceCheck(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) private {
+        if (to.isContract()) {
+            try IERC1155Receiver(to).onERC1155BatchReceived(operator,from,amounts,data) returns(
+                bytes4 response
+            ){
+                if (response != IERC1155Receiver.onERC1155BatchReceived.selector) {
+                    revert("ERC1155:ERC1155Receiver rejected token");
                 }
             } catch Error(string memory reason) {
                 revert(reason);
