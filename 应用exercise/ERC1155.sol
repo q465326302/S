@@ -45,7 +45,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
     function setApprovalForAll(address operator, bool approved) public virtual override {
         require(msg.sender != operator,"ERC1155:setting approval status for self");
         _operatorApprovals[msg.sender][operator] = approved;
-        emit ApprovalForAll(msg.sender,operator,approved);
+        emit ApprovalForAll(msg.sender, operator, approved);
     }
     function isApprovadForAll(address account,address operator) public view virtual override returns (bool) {
         return _operatorApprovals[account][operator];    
@@ -116,7 +116,9 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         require(to != address(0),"ERC1155:mint to the zero address");
         address operator = msg.sender;
         _balances[id][to] += amount;
-        emit TransferSingle(operator, address(0),to,id, amount, data);
+        emit TransferSingle(operator, address(0),to,id, amount);
+
+        _doSafeTransferAcceptanceCheck(operator,address(0),to,id,amount, data);
     }
     function _mintBatch(
         address to,
@@ -128,7 +130,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         require(ids.length == amounts.length,"ERC1155: ids and amounts length mismatch");
         address operator = msg.sender;
         for(uint256 i = 0; i < ids.length; i++){
-            _balances[ids[i]][to] += amount[i];
+            _balances[ids[i]][to] += amounts[i];
         }
         emit TransferBatch(operator,address(0),to, ids,amounts);
         _doSafeBatchTransferAcceptanceCheck(operator,address(0), to,ids, amounts, data);
@@ -161,7 +163,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
 
         for(uint256 i = 0;i < ids.length;i++){
             uint256 id = ids[i];
-            uint256 amounts = amounts[i];
+            uint256 amount = amounts[i];
             uint256 fromBalance = _balances[id][from];
             require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
             unchecked{
@@ -200,7 +202,7 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         bytes memory data
     ) private {
         if (to.isContract()) {
-            try IERC1155Receiver(to).onERC1155BatchReceived(operator,from,amounts,data) returns(
+            try IERC1155Receiver(to).onERC1155BatchReceived(operator,from, ids,amounts,data) returns(
                 bytes4 response
             ){
                 if (response != IERC1155Receiver.onERC1155BatchReceived.selector) {

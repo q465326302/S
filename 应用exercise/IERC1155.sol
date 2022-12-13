@@ -14,7 +14,7 @@ interface IERC1155 is IERC165 {
         uint256[] value//代币数组
     );
 
-    event ApprovalForAll(address indexed account,address,address indexed operator, bool approved);
+    event ApprovalForAll(address indexed account,address indexed operator, bool approved);
     //批量授权
     event URI(string value,uint256 indexed id);
     //当“id”币的URI发生变化是释放，“value”成为新的URI
@@ -30,7 +30,7 @@ interface IERC1155 is IERC165 {
     
     function setApprovalForAll(address operator,bool approved)external;
     //批量授权 调用者代币授权给operator地址
-    function isApprovaForAll(address account, address operator) external view returns(bool);
+    function isApprovadForAll(address account, address operator) external view returns(bool);
     //批量授权查询 如授权地址operator被account授权 返回ture
     function safeTransferFrom(
         address from,
