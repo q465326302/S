@@ -13,9 +13,28 @@ contract PaymentSplit{
     address[] public payees; // 受益人数组
     
     constructor(address[] memory _payees, uint256[] memory _shares) payable {
+        //检查_payees和_shares数组长度相同，且不为0
         require(_payees.length == _shares.length, "PaymentSplitter: payees and shares length mismatch");
         require(_payees.length > 0, "PaymentSplitter:no payees");
+        //调用_addPayee,更新受益人地址payees、受益人份额shares总份额totalshares
         for (uint256 i = 0; i < _payees.length; i++){
             _addPayee(_payees[i], _shares[i]);
         }
+        //初始化受益人和分账份额数组，要求数组长度不为0，数组长度相等 
+        //_shares中元素要大于0，_payees中地址不能为0地址且不能有重复地址
+
+    }
+    receive() external payable virtual {
+        emit PaymentReceived(msg.sender,msg.value);
+    }
+    function release(address payable _account) public virtual {
+        //account必须是受益人
+        require(shares[_account] > 0,"paymentsplitter:account has no shares");
+        //计算account应得的eth
+        uint256 payment = releasable(_account);
+        require(payment != 0, "Paymentsplitter: account is not due payment");
+        totalReleased += payment;
+        released[_account] += payment;
+        _account.transfer(payment);
+        emit PaymentReleased(_account,payment);
     }
