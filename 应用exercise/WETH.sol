@@ -21,9 +21,12 @@ contract WETH is ERC20 {
     function deposit() public payable {
         _mint(msg.sender, msg.value);
         emit Deposit(msg.sender,msg.value);
-    }
+    }//存款函数 存ETH 铸造等量WETH
     function withdraw(uint amount) public {
-        require
-    }
+        require(balanceOf(msg.sender) >= amount );
+        _burn(msg.sender,amount);
+        payable(msg.sender).transfer(amount);
+        emit Withrawal(msg.sender,amount);
+    }//提款函数 销毁WETH 取回等量ETH
 
 }
