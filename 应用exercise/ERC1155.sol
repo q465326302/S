@@ -135,15 +135,62 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
     }
     function _burn(
         address from,
-        address id,
+        uint256 id,
         uint256 amount
     ) internal virtual {
         require(from != address(0),"ERC1155: burn amount exceeds balance");
+        address operator = msg.sender;
+        uint256 fromBalance = _balances[id][from];
+        require(fromBalance >= amount,"ERC1155:burn amount exceeds balance");
         unchecked {
             _balances[id][from] = fromBalance - amount;
         }
+    
+    emit TransferSingle(operator, from, address(0), id, amount);
     }
-    emit TransferSingle(operator, from, address(0),id, amount);
+
+    function _burnBatch(
+        address from,
+        uint256[] memory ids,
+        uint256[] memory amounts
+    ) internal virtual {
+        require(from != address(0),"ERC1155: burn from the zero address");
+        require(ids.length == amounts.length,"ERC1155:ids and amounts length mismatch");
+
+        address operator = msg.sender;
+
+        for(uint256 i = 0;i < ids.length;i++){
+            uint256 id = ids[i];
+            uint256 amounts = amounts[i];
+            uint256 fromBalance = _balances[id][from];
+            require(fromBalance >= amount, "ERC1155: burn amount exceeds balance");
+            unchecked{
+                _balances[id][from] = fromBalance - amount;
+            }
+        }
+        emit TransferBatch(operator, from, address(0),ids, amounts);
+
+    }
+    function _doSafeTransferAcceptanceCheck(
+        address operator,
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) private {
+        if (to.isContract()) {
+            try IERC1155Receiver(to).onERC1155Received(operator,from, id, amount,data) returns (bytes4 response){
+                if (response != IERC1155Receiver.onERC1155Received.selector) {
+                    revert("ERC1155:ERC1155Receiver rejected tokens");
+                }
+            } catch Error(string memory reason) {
+                revert(reason);
+            } catch {
+                revert("ERC1155:transfer to non-ERC1155Receiver implementer");
+            }
+        }
+    }
 
 
 }

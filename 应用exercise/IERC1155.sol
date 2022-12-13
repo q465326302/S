@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 import "./IERC165.sol";
 
 interface IERC1155 is IERC165 {
-    event TransferSingle(address indexed operator,address indexed from, address indexed to, uint256 id,uint256 value);
+    event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
     //单个代币转账事件（当`value`个`id`种类的代币被`operator`从`from`转账到`to`时释放
 
     event TransferBatch(//批量代币转账
@@ -30,7 +30,7 @@ interface IERC1155 is IERC165 {
     
     function setApprovalForAll(address operator,bool approved)external;
     //批量授权 调用者代币授权给operator地址
-    function isApprovadForAll(address account, address operator) external view returns(bool);
+    function isApprovaForAll(address account, address operator) external view returns(bool);
     //批量授权查询 如授权地址operator被account授权 返回ture
     function safeTransferFrom(
         address from,
