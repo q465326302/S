@@ -6,10 +6,20 @@ pragma solidity ^0.8.0;
 import "./ERC20.sol";
 
 contract WETH is ERC20 {
-    event Deposit(address indexed dst, uint wad);
-    event Withrawal(address indexed src, uint wad);
+    event Deposit(address indexed dst, uint wad);//存款
+    event Withrawal(address indexed src, uint wad);//取款
 
     constructor() ERC20("WERH","WETH"){
+//初始化ERC20的名字和代号
+    }
+    fallback() external payable{
+        deposit();
+    }
+    receive() external payable{
+        deposit();
+    }
+    function deposit() public payable {
         
     }
+
 }
