@@ -134,8 +134,16 @@ contract ERC1155 is IERC165, IERC1155, IERC1155MetadataURI{
         _doSafeTransferAcceptanceCheck(operator,address(0), to,ids, amounts, data);
     }
     function _burn(
-        
-    )
+        address from,
+        address id,
+        uint256 amount
+    ) internal virtual {
+        require(from != address(0),"ERC1155: burn amount exceeds balance");
+        unchecked {
+            _balances[id][from] = fromBalance - amount;
+        }
+    }
+    emit TransferSingle(operator, from, address(0),id, amount);
 
 
 }
