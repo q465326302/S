@@ -28,13 +28,36 @@ contract PaymentSplit{
         emit PaymentReceived(msg.sender,msg.value);
     }
     function release(address payable _account) public virtual {
-        //account必须是受益人
+        //为有效受益人地址_account分帐，相应的ETH直接发送到受益人地址。
+        //任何人都可以触发这个函数，但钱会打给account地址。
         require(shares[_account] > 0,"paymentsplitter:account has no shares");
-        //计算account应得的eth
+        //account必须是受益人
         uint256 payment = releasable(_account);
+        //计算account应得的eth
         require(payment != 0, "Paymentsplitter: account is not due payment");
         totalReleased += payment;
+         // 更新总支付totalReleased和支付给每个受益人的金额released
         released[_account] += payment;
-        _account.transfer(payment);
+        _account.transfer(payment);//转账
         emit PaymentReleased(_account,payment);
     }
+    function releasable(address _account) public view returns (uint256) {
+        uint256 totalReleased = address(this).balance + totalReleased;
+        return pendingPayment(_account, totalReleased, released[_account]);
+        //调用_pendingPayment计算account应得的ETH
+    }
+    //计算一个账号能分的eth
+    function pendingPayment(
+        //计算受益人应分的eth
+        address _account,
+        //受益人地址
+        uint256 _totalReceived,
+        //分账合约总收入
+        uint256 _alreadyReleased
+        //该地址已领
+    ) public view returns(uint256){
+        return (_totalReceived * shares[_account]) / totalShares - _alreadyReleased;
+        //account的eth=总应得-已领
+    }
+}
+    
