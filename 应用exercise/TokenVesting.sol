@@ -34,7 +34,9 @@ contract TokenVesting {
         IERC20(token).transfer(beneficiary,releasable);
     }
     function vestedAmout(address token, uint256 timestamp ) public view returns (uint256) {
+        //线性释放公式 根据线性释放公式，计算已经释放的数量。开发者可以通过修改这个函数，自定义释放方式
         uint256 totalAllocation = IERC20(token).balanceOf(address(this)) + erc20Released[token];
+        // 合约里总共收到了多少代币（当前余额 + 已经提取）
         if (timestamp < start){
             return 0;
         } else if (timestamp > start + duration) {
@@ -42,6 +44,8 @@ contract TokenVesting {
         } else {
             return (totalAllocation * (timestamp - start)) / duration;
         }
+        // 根据线性释放公式，计算已经释放的数量
     }
+    
 }
 
