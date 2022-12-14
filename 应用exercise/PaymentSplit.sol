@@ -59,5 +59,15 @@ contract PaymentSplit{
         return (_totalReceived * shares[_account]) / totalShares - _alreadyReleased;
         //account的eth=总应得-已领
     }
+    function _addPayee(address _account, uint256 _accountShares ) private {
+        require(_account != address(0),"PaymentSplitter : account is the zero address");
+        require(_accountShares > 0, "PaymentSplitter : shares are 0 ");
+        require(shares[_account] == 0, "PaymentSplitter: account already has shares");
+        payees.push(_account);
+        shares[_account] = _accountShares;
+        totalShares += _accountShares;
+
+        emit PayeeAdded(_account,_accountShares);
+    }
 }
     
