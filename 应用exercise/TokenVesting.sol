@@ -10,7 +10,7 @@ contract TokenVesting {
     mapping(address => uint256) public erc20Released;
     //代币地址->释放数量的映射，记录受益人已领取的代币数量
 
-    uint256 public immutable beneficiary;
+    address public immutable beneficiary;
     //受益人地址
     uint256 public immutable start;
     //归属期 起始时间戳
@@ -34,7 +34,7 @@ contract TokenVesting {
         IERC20(token).transfer(beneficiary,releasable);
     }
     function vestedAmout(address token, uint256 timestamp ) public view returns (uint256) {
-        uint256 totalAllocation = IERC20(token).balance(address(this)) + erc20Released[token];
+        uint256 totalAllocation = IERC20(token).balanceOf(address(this)) + erc20Released[token];
         if (timestamp < start){
             return 0;
         } else if (timestamp > start + duration) {
