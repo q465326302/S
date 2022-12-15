@@ -55,15 +55,18 @@ contract Timelock{
     //交易的唯一标识符为所有参数的哈希值，利用getTxHash()函数计算。
     //进入队列的交易会更新在queuedTransactions变量中，并释放QueueTransaction事件。
     
-    function CancelTransaction(address target, 
+    function CancelTransaction(address target, //取消特定交易。
     uint256 value,
     string memory signature,
     bytes memory data, 
     uint256 executeTime
     ) public onlyOwner {
         bytes32 txHash = getTxHash(target, value, signature, data, executeTime);
+        // 计算交易的唯一识别符：一堆东西的hash
         require(QueueTransactions[txHash], "Timelock : cancelTransaction: Transaction hasn't been queued.");
+       // 检查：交易在时间锁队列中
         queuedTransactions[txHash] = false;
+        // 将交易移出队列
 
         emit CancelTransaction(txHash, target, value, signature, data, executeTime);
     }
@@ -74,11 +77,18 @@ contract Timelock{
     bytes memory data,
     uint256 executeTime
     ) public payable onlyOwner returns(bytes memory)
+    
     bytes32 txHash = getTxHash(target, value,signature, data, executeTime);
+    
+    
     require(queuedTransactions[txHash], "Timelock::cancelTransaction: Transaction hasn't been queued.");
+    // 检查：交易是否在时间锁队列中
+    
     require(getBlockTimestamp() >= executeTime, "Timelock::executeTransaction: Transaction hasn't surpassed time lock.");
+    // 检查：达到交易的执行时间
+    
     require(getBlockTimestamp <= executeTime + GRACE_PETIOD, "Timelock::executeTransaction: Transaction is stale.");
-    queuedTransactions[txHash] = false;
+    queuedTransactions[txHash] = false;// 获取call data
     bytes memory callData;
     if (bytes(signature).length == 0) {
         callData = data;
@@ -86,6 +96,7 @@ contract Timelock{
         callData = abi.encodePacked(bytes4(keccak256(bytes(signature))),data);
     }
     (bool success, bytes memory returnData) = target.call{value: value}(callData);
+    // 利用call执行交易
     require(success,"Timelock::executeTransaction: Transaction execution reverted.");
     emit ExecuteTransaction(txHash, target, value, signature, data,executeTime);
     return returnData;
