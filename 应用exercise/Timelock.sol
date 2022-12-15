@@ -22,6 +22,7 @@ contract Timelock{
     }
 
     constructor(uint _delay) {
+        //初始化交易锁定时间（秒）和管理员地址
         delay = _delay;
         admin = msg.sender;
     }
