@@ -105,4 +105,14 @@ contract Timelock{
         return block.timestamp;
     }
     //获取当前区块链时间戳
+    function getTxHash(
+        address target,
+        uint value,
+        string memory signature,
+        bytes memory data,
+        uint executeTime
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encode(target, value, signature, data,executeTime));
+    }
+    //返回交易的标识符，为很多交易参数的hash
 }
