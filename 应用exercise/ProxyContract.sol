@@ -16,9 +16,10 @@ contract Proxy {
         assembly {
             let _implementation := sload(0)
             calldatacopy(0,0, calldatasize())
-            let ressult := delegetecall(gas(), _implementation, 0, calldatasize(),0,0)
+            
+            let result := delegatecall(gas(), _implementation, 0, calldatasize(),0,0)
             returndatacopy(0,0,returndatasize())
-            switch ressult
+            switch result
             case 0 {
                 revert(0, returndatasize())
             }
@@ -37,5 +38,17 @@ contract Logic {
             emit CallSuccess();
             return x + 1;
         }
+}
+contract Caller {
+    address public proxy;
+
+    constructor(address _proxy){
+        proxy = _proxy;
+    }
+
+    function increase() external returns(uint) {
+        ( , bytes memory data) = proxy.call(abi.encodeWithSignature("increment()"));
+        return abi.decode(data,(uint));
+    }
 }
 
