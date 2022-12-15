@@ -100,4 +100,9 @@ contract Timelock{
     require(success,"Timelock::executeTransaction: Transaction execution reverted.");
     emit ExecuteTransaction(txHash, target, value, signature, data,executeTime);
     return returnData;
+
+    function getBlockTimestamp() public view returns (uint) {
+        return block.timestamp;
+    }
+    //获取当前区块链时间戳
 }
