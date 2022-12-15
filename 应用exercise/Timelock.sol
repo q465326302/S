@@ -9,7 +9,7 @@ contract Timelock{
     address public admin;
     uint public constant GRACE_PETIOD = 7 days;
     uint public delay;
-    mapping (bytes32 => bool) public QueueTransactions;
+    mapping (bytes32 => bool) public queuedTransactions;
 
     modifier onlyOwner(){
         //被修饰的函数只能被管理员执行。
@@ -29,9 +29,9 @@ contract Timelock{
         admin = msg.sender;
     }
 
-    function changeAdmin(address NewAdmin) public onlyTimelock {
+    function changeAdmin(address newAdmin) public onlyTimelock {
         //改变管理员地址，调用者必须是Timelock合约
-        admin = NewAdmin;
+        admin = newAdmin;
         emit NewAdmin(newAdmin);
     }
 
@@ -47,7 +47,7 @@ contract Timelock{
         // 计算交易的唯一识别符：一堆东西的hash
         bytes32 txHash = getTxHash(target, value, signature, data, executeTime);
         // 将交易添加到队列
-        QueueTransactions[txHash] = true;
+        queuedTransactions[txHash] = true;
         emit QueueTransaction(txHash,target, value, signature, data, executeTime);
         return txHash;
     }
@@ -55,7 +55,7 @@ contract Timelock{
     //交易的唯一标识符为所有参数的哈希值，利用getTxHash()函数计算。
     //进入队列的交易会更新在queuedTransactions变量中，并释放QueueTransaction事件。
     
-    function CancelTransaction(address target, //取消特定交易。
+    function cancelTransaction(address target, //取消特定交易。
     uint256 value,
     string memory signature,
     bytes memory data, 
@@ -63,7 +63,7 @@ contract Timelock{
     ) public onlyOwner {
         bytes32 txHash = getTxHash(target, value, signature, data, executeTime);
         // 计算交易的唯一识别符：一堆东西的hash
-        require(QueueTransactions[txHash], "Timelock : cancelTransaction: Transaction hasn't been queued.");
+        require(queuedTransactions[txHash], "Timelock : cancelTransaction: Transaction hasn't been queued.");
        // 检查：交易在时间锁队列中
         queuedTransactions[txHash] = false;
         // 将交易移出队列
@@ -76,7 +76,7 @@ contract Timelock{
     string memory signature,
     bytes memory data,
     uint256 executeTime
-    ) public payable onlyOwner returns(bytes memory)
+    ) public payable onlyOwner returns(bytes memory) {
     
     bytes32 txHash = getTxHash(target, value,signature, data, executeTime);
     
@@ -87,7 +87,7 @@ contract Timelock{
     require(getBlockTimestamp() >= executeTime, "Timelock::executeTransaction: Transaction hasn't surpassed time lock.");
     // 检查：达到交易的执行时间
     
-    require(getBlockTimestamp <= executeTime + GRACE_PETIOD, "Timelock::executeTransaction: Transaction is stale.");
+    require(getBlockTimestamp() <= executeTime + GRACE_PETIOD, "Timelock::executeTransaction: Transaction is stale.");
     queuedTransactions[txHash] = false;// 获取call data
     bytes memory callData;
     if (bytes(signature).length == 0) {
@@ -100,6 +100,7 @@ contract Timelock{
     require(success,"Timelock::executeTransaction: Transaction execution reverted.");
     emit ExecuteTransaction(txHash, target, value, signature, data,executeTime);
     return returnData;
+    }
 
     function getBlockTimestamp() public view returns (uint) {
         return block.timestamp;
