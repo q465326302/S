@@ -12,11 +12,13 @@ contract Timelock{
     mapping (bytes32 => bool) public QueueTransactions;
 
     modifier onlyOwner(){
+        //被修饰的函数只能被管理员执行。
         require(msg.sender == admin, "Timelock :Caller not admin");
         _;
     }
     
     modifier onlyTimelock() {
+        //被修饰的函数只能被时间锁合约执行。
         require(msg.sender == address(this),"Timelock :Caller not Timelock");
         _;
     }
@@ -49,4 +51,42 @@ contract Timelock{
         emit QueueTransaction(txHash,target, value, signature, data, executeTime);
         return txHash;
     }
+    //调用这个函数时，要保证交易预计执行时间executeTime大于当前区块链时间戳+锁定时间delay。
+    //交易的唯一标识符为所有参数的哈希值，利用getTxHash()函数计算。
+    //进入队列的交易会更新在queuedTransactions变量中，并释放QueueTransaction事件。
+    
+    function CancelTransaction(address target, 
+    uint256 value,
+    string memory signature,
+    bytes memory data, 
+    uint256 executeTime
+    ) public onlyOwner {
+        bytes32 txHash = getTxHash(target, value, signature, data, executeTime);
+        require(QueueTransactions[txHash], "Timelock : cancelTransaction: Transaction hasn't been queued.");
+        queuedTransactions[txHash] = false;
+
+        emit CancelTransaction(txHash, target, value, signature, data, executeTime);
+    }
+    
+    function executeTransaction(address target, //执行特定交易
+    uint256 value,
+    string memory signature,
+    bytes memory data,
+    uint256 executeTime
+    ) public payable onlyOwner returns(bytes memory)
+    bytes32 txHash = getTxHash(target, value,signature, data, executeTime);
+    require(queuedTransactions[txHash], "Timelock::cancelTransaction: Transaction hasn't been queued.");
+    require(getBlockTimestamp() >= executeTime, "Timelock::executeTransaction: Transaction hasn't surpassed time lock.");
+    require(getBlockTimestamp <= executeTime + GRACE_PETIOD, "Timelock::executeTransaction: Transaction is stale.");
+    queuedTransactions[txHash] = false;
+    bytes memory callData;
+    if (bytes(signature).length == 0) {
+        callData = data;
+    } else {
+        callData = abi.encodePacked(bytes4(keccak256(bytes(signature))),data);
+    }
+    (bool success, bytes memory returnData) = target.call{value: value}(callData);
+    require(success,"Timelock::executeTransaction: Transaction execution reverted.");
+    emit ExecuteTransaction(txHash, target, value, signature, data,executeTime);
+    return returnData;
 }
