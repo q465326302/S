@@ -22,7 +22,20 @@ contract Proxy {
             case 0 {
                 revert(0, returndatasize())
             }
-            default(0,returndatasize())
+            default{
+                return(0,returndatasize())
+            }
         }
     }
 }
+contract Logic {
+        address public implementation;
+        uint public x = 99;
+        event CallSuccess();
+
+        function increment() external returns(uint) {
+            emit CallSuccess();
+            return x + 1;
+        }
+}
+
