@@ -56,4 +56,35 @@ contract MultuisigWallet {
         if (success) emit ExecutionSuccess(txHash);
         else emit ExecutionFailure(txHash);
     }
+
+    function checkSignatures(
+        //检查签名和交易数据是否对应。如果是无效签名，交易会revert
+        bytes32 dataHash,
+        bytes memory signatures
+    ) public view{
+        uint256 _threshold = threshold;
+        require(_threshold > 0,"WTF5005");
+        // 读取多签执行门槛
+        require(signatures.length >= _threshold * 65,"WTF5006");
+        // 检查签名长度足够长
+
+        address lastOwner = address(0);
+        address currentOwner;
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
+        uint256 i;
+    // 通过一个循环，检查收集的签名是否有效
+    // 大概思路：
+    // 1. 用ecdsa先验证签名是否有效
+    // 2. 利用 currentOwner > lastOwner 确定签名来自不同多签（多签地址递增）
+    // 3. 利用 isOwner[currentOwner] 确定签名者为多签持有人
+        for (i= 0; i < _threshold; i++){
+            (v, r, s) = signatureSplit(signatures, i);
+            currentOwner = ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",dataHash)),v, r, s);
+            // 利用ecrecover检查签名是否有效
+            require(currentOwner > lastOwner && isOwner[currentOwner],"WTF5007");
+            lastOwner = currentOwner;
+        }
+    }
 }
