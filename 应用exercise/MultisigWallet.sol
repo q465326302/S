@@ -38,4 +38,22 @@ contract MultuisigWallet {
         ownerCount = _owners.length;
         threshold = _threshold;
     }
+    function exeTransaction(
+        // 在收集足够的多签签名后，执行交易
+        address to,
+        uint256 value,
+        bytes memory data,
+        bytes memory signatures
+    ) public payable virtual returns (bool success) {
+        bytes32 txHash = encodeTransactionData(to,value,data,nonce,block.chainid);
+        // 编码交易数据，计算哈希
+        nonce++;
+        // 增加nonce
+        checkSignatures(txHash, signatures);// 检查签名
+        (success, ) =to.call{value:value}(data);
+        // 利用call执行交易，并获取交易结果
+        require(success , "WTF5004");
+        if (success) emit ExecutionSuccess(txHash);
+        else emit ExecutionFailure(txHash);
+    }
 }
