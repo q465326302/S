@@ -106,4 +106,24 @@ contract MultuisigWallet {
             v := and(mload(add(signatures,add(signaturePos,0x41))),0xff)
         }
     }
+    function encodeTransactionData(
+        //将交易数据打包并计算哈希
+        address to,//目标合约地址
+        uint256 value,//支付的以太坊
+        bytes memory data, //calldata
+        uint256 _nonce,//交易的nonce.
+        uint256 chainid//链id
+    ) public pure returns(bytes32) {
+        bytes32 safeTxHash = 
+            keccak256(
+                abi.encode(
+                    to,
+                    value,
+                    keccak256(data),
+                    _nonce,
+                    chainid
+                )
+            );
+        return safeTxHash;
+    }
 }
