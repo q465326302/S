@@ -48,6 +48,6 @@ contract UUPS2{
 
     function upgrade(address newImplementation) external {
         require(msg.sender == admin);
-        implementation = newImplementation
+        implementation = newImplementation;
     }
 }
