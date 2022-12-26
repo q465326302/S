@@ -32,7 +32,7 @@ contract MultuisigWallet {
             address owner =_owners[i]; 
             require(owner != address(0) && owner != address(this) && !isOwner[owner],"WTF5003");
             // 多签人不能为0地址，本合约地址，不能重复
-            owner.push(owner);
+            owners.push(owner);
             isOwner[owner] = true;
         }
         ownerCount = _owners.length;
