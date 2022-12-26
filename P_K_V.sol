@@ -8,5 +8,5 @@ contract p{
     function get(string calldata _K) public view returns(string memory _V){
         _V = P[_K];
     }
-    
+    3
 }
