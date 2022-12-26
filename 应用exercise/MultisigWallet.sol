@@ -87,4 +87,23 @@ contract MultuisigWallet {
             lastOwner = currentOwner;
         }
     }
+    function signatureSplit(bytes memory signatures, uint256 pos)
+    // 将单个签名从打包的签名分离出来
+        internal
+        pure 
+        returns (
+            uint8 v,
+            bytes32 r,
+            bytes32 s
+        )
+    {
+        //参数分别为打包签名signatures和要读取的签名位置pos。利用了内联汇编，将签名的r，s，和v三个值分离出来。
+        assembly {
+            // 签名的格式：{bytes32 r}{bytes32 s}{uint8 v}
+            let signaturePos := mul(0x41,pos)
+            r := mload(add(signatures,add(signaturePos,0x20)))
+            s := mload(add(signatures,add(signaturePos,0x40)))
+            v := and(mload(add(signatures,add(signaturePos,0x41))),0xff)
+        }
+    }
 }
