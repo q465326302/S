@@ -33,5 +33,7 @@ contract Attack{
         bank.deposit{value: 1 ether}();
         bank.withdrow();
     }
-    
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
 }
