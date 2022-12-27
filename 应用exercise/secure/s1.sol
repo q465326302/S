@@ -37,3 +37,20 @@ contract Attack{
         return address(this).balance;
     }
 }
+contract GoodBank {
+    mapping (address => uint256) public balanceOf;
+
+    function deposit() external payable {
+        balanceOf[msg.sender] += msg.value;
+    }
+    function withdraw() external {
+        uint256 balance = balanceOf[msg.sender];
+        require(balance > 0, "Insufficient balance");
+        balanceOf[msg.sender] = 0;
+        (bool success, ) = msg.sender.call{value: balance}("");
+        require(success, "Failed to send Ether");
+    }
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+}
