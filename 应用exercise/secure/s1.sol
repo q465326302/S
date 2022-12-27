@@ -13,4 +13,7 @@ contract Bank {
         require(success, "Failed to send ETH");
         balanceOf[msg.sender] = 0;
     }
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
 }
