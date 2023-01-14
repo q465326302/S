@@ -23,6 +23,7 @@ contract Delegation {
     delegate = Delegate(_delegateAddress);
     owner = msg.sender;
   }
+  
 
   fallback() external {
     (bool result,) = address(delegate).delegatecall(msg.data);
