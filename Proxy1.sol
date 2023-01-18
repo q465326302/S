@@ -24,7 +24,7 @@ contract Proxy1 is Proxy{
         Store proxy = new Store(); 
         uint256 storeId = _storeId;
         address storeAddress =  _storeAddress;
-    }
+    } 
     //向特定的数字仓库增加元素
     function add(uint256 storeId, uint256 number) external virtual override{
         storeId = _storeId;
