@@ -19,6 +19,7 @@ contract Delegation {
   address public owner;
   Delegate delegate;
 
+
   constructor(address _delegateAddress) {
     delegate = Delegate(_delegateAddress);
     owner = msg.sender;
