@@ -24,7 +24,7 @@ contract HoneyPot is ERC20 , Ownable {
     }
 
     function mint(address to, uint amount) public onlyOwner {
-        
+
 
         _mint(to, amount);
     }
