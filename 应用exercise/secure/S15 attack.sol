@@ -53,3 +53,4 @@ contract OracleTest is Test {
         return amounts[1];
     }
 }
+
