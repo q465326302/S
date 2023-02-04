@@ -15,4 +15,5 @@ contract Vault {
       locked = false;
     }
   }
+  
 }
