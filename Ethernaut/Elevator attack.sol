@@ -29,4 +29,5 @@ contract hack {
     function exploit() public{
         e.goTo(123);
     }
+    
 }
