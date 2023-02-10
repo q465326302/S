@@ -8,6 +8,7 @@ contract GatekeeperTwo {
   modifier gateOne() {
     require(msg.sender != tx.origin);
     _;
+    
   }
 
   modifier gateTwo() {
