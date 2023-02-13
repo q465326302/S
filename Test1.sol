@@ -22,6 +22,7 @@ contract Test1 is Test {
     function show() external view virtual override returns(uint256[] memory _nums) {
         
         _nums = numberStore;
+        
     }
     
     //向numberStore末尾添加一个数字 并释放一个 add Action事件
