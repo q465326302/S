@@ -36,5 +36,6 @@ contract LibraryContract {
 
   function setTime(uint _time) public {
     storedTime = _time;
+    
   }
 }
