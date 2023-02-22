@@ -9,6 +9,7 @@ contract Hash {
     IERC20 private immutable token2;
     
     constructor(IDex _dex) {
+        
         dex = _dex;
         token1 = IERC20(dex.token1());
         token2 = IERC20(dex.token2());
