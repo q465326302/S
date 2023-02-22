@@ -5,11 +5,13 @@ pragma solidity ^0.8.0;
 
 contract Hash {
     IDex private immutable dex;
+    //0x86c710570AE443C8BE6325e2e60926DD4419048D
     IERC20 private immutable token1;
+    //0xf73362374cA2462Ea0C4D14dE8f3664d28d07b14
     IERC20 private immutable token2;
     
     constructor(IDex _dex) {
-        
+
         dex = _dex;
         token1 = IERC20(dex.token1());
         token2 = IERC20(dex.token2());
