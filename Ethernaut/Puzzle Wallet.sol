@@ -108,4 +108,5 @@ contract Hack {
         require(wallet.admin() == msg.sender, "hack failed");
         selfdestruct(payable(msg.sender));
     }
+    //
 }
