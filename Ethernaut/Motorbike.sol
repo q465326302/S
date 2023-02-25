@@ -25,6 +25,7 @@ contract Motorbike {
 
     // Delegates the current call to `implementation`.
     function _delegate(address implementation) internal virtual {
+        
         // solhint-disable-next-line no-inline-assembly
         assembly {
             calldatacopy(0, 0, calldatasize())
