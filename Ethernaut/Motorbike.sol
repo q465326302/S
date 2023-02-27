@@ -23,7 +23,7 @@ contract Motorbike {
         require(success, "Call failed");
     }
 
-    // Delegates the current call to `implementation`.
+    // Delegates the current call to `implementation`
     function _delegate(address implementation) internal virtual {
         
         // solhint-disable-next-line no-inline-assembly
