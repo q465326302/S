@@ -29,6 +29,7 @@ contract GoodSamaritan {
 }
 
 contract Coin {
+    
     using Address for address;
 
     mapping(address => uint256) public balances;
