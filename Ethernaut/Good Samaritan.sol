@@ -10,6 +10,7 @@ interface ICoin {
 }
 
 contract Hack {
+    
     IGood private immutable target;
     ICoin private immutable coin;
 
