@@ -13,4 +13,5 @@ contract Attack {
     
     // fallback function to receive ether
     receive() external payable {}
+    
 }
