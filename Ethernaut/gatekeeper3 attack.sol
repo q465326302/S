@@ -27,6 +27,7 @@ contract SimpleTrick {
       target.getAllowance(password);
     }
   }
+  
 }
 
 contract GatekeeperThree {
