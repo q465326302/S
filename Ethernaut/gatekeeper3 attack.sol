@@ -84,6 +84,7 @@ contract GatekeeperThree {
 contract Solution {
     function solve(address _to) external {
         GatekeeperThree(payable(_to)).construct0r();
+        
         GatekeeperThree(payable(_to)).enter();
     }
 
