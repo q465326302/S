@@ -24,6 +24,7 @@ contract SimpleTrick {
     
   function trickyTrick() public {
     if (address(this) == msg.sender && address(this) != trick) {
+      
       target.getAllowance(password);
     }
   }
