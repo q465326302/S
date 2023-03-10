@@ -88,4 +88,5 @@ contract Hack{
   receive()external payable{
     require(false);
   }
+  
 }
