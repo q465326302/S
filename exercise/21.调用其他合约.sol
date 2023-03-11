@@ -52,7 +52,7 @@ contract call{
     //调用时 需要将需要转移的地址和带设定的x值作为参数输入 并把eth
     //向制定地址转移一定数量eth
     function setXTransferETH(address ontherContract, uint256 x) payable external{
-        
+        //_Name(_Address).f{value:_value}()
         OntherContract(ontherContract).setX{value:msg.value}(x);
         
         
