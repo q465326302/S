@@ -10,6 +10,7 @@ contract c {
         sender = msg.sender;
     }
 }
+
 contract b{
     uint public num;
     address public sender;
