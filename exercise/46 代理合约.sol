@@ -8,4 +8,5 @@ contract Proxy{
     constructor(address implementation_){
         implementation = implementation_;
     }
+    
 }
