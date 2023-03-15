@@ -8,6 +8,22 @@ contract Proxy{
     constructor(address implementation_){
         implementation = implementation_;
     }
+    fallback() external payable{
+        address _implementation = implementation;
+        assembly{
+            calldatacopy(0, 0, calldatasize())
+            //// delegatecall调用implementation
+            let result := delegatecall(gas(), _implementation, 0, calldatasize(), 0, 0)
+            returndatacopy(0, 0, returndatasize())
+            switch result
+            case 0 {
+                revert(0, returndatasize())
+                }
+            default {
+                return(0, returndatasize())
+
+        }
+    }
 
 }
 contract proxy{
@@ -17,12 +33,15 @@ contract proxy{
         delegate = _delegate;
 
     }
-    function() external payable {
+    function pro() external payable {
         address to = delegate;
         assembly{
             calldatacopy(0,0,calldatasize())
             let result := delegatecall(gas(), to, 0, calldatasize(),0,0)
-            result
+            returndatacopy(0,0,returndatasize())
+            switch result
+            case 0 {revert(0,returndatasize())}
+            default {return(0,returndatasize())}
         }
     }
 }
