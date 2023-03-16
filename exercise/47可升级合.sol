@@ -10,6 +10,7 @@ contract SimpleUgrade{
         implementation = _implementation;
 
     }
+    
     fallback() external payable{
         (bool success,bytes memory data) = implementation.delegatecall(msg.data);
     }
