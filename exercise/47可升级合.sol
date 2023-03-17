@@ -18,6 +18,7 @@ contract SimpleUgrade{
         require(msg.sender == admin);
         implementation = newImplemention;
     }
+    
 }
 
 contract Logic1{
